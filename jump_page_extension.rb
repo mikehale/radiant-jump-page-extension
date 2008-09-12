@@ -5,6 +5,10 @@ class JumpPageExtension < Radiant::Extension
   description "Provides a 'jump page' for all external links from your radiant site."
   url "http://github.com/mikehale/radiant-jump_page-extension"
   
+  define_routes do |map|
+    map.connect 'jump/:url', :controller => '/jump_page'
+  end
+  
   def activate
     Page.class_eval do
       
@@ -14,10 +18,10 @@ class JumpPageExtension < Radiant::Extension
         
         (doc/"a").each {|link|
           url = link.attributes['href']
-          next if url.include?(request.headers["HTTP_HOST"])
+          next if url =~ /^\/.*/
 
           if jumppage = Page.find_by_class_name("JumpPage")
-            link['href'] = "#{jumppage.url}#{CGI::escape(url)}"
+            link['href'] = "/jump/#{CGI::escape(url.to_a.pack('m'))}"
           end
         }
         

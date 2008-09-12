@@ -17,13 +17,13 @@ class JumpPageTest < ActionController::IntegrationTest
                              :class_name => "JumpPage")
     
     get '/'
-    assert_select "body:first-child a[href=http://www.example.com]"
-    assert_select "body:last-child a[href=#{jumppage.url}#{CGI::escape("http://google.com")}]"
+    assert_select "body:first-child a[href=/somepage]"
+    assert_select "body:last-child a[href=/jump/#{CGI::escape("http://google.com".to_a.pack('m'))}]"
   end
   
   def content
     %(<html><body>    
-      <a href="http://www.example.com">Local Link</a>
+      <a href="/somepage">Local Link</a>
       <a href="http://google.com">Remote Link</a>
     </body></html>)
   end
