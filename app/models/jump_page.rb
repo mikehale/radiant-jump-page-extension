@@ -1,0 +1,2 @@
+class JumpPage < Page
+end

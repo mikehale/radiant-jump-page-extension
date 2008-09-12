@@ -1,0 +1,24 @@
+= JumpPage
+
+ Rewrites all links external to your radiant site to your jump page where you can inform your users
+ that they are leaving your site etc. before allowing them to visit their intended destination.
+
+== Installation
+
+  $ cd <radiant_app>/vendor/extensions/
+  $ git clone <jump-page_git_url> jump_page
+
+==Usage
+
+Create a page of type JumpPage that looks something like this:
+  Continue to your destination: <r:jump_page:link/>
+
+== Home
+
+  http://github.com/mikehale/radiant-jump-page-extension/tree/master
+
+== Credits
+
+Sponsored by Ignite Social Media LLC - http://ignitesocialmedia.com/
+
+See LICENSE for copyright and licensing details.
