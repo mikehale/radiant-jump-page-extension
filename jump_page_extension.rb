@@ -20,10 +20,10 @@ class JumpPageExtension < Radiant::Extension
         (doc/"a").each {|link|
           url = link.attributes['href']
           next if self.is_a? JumpPage 
-          next if url =~ /^\/.*/
+          next if url =~ /^\/.*/ # starts with /
 
           if jumppage = Page.find_by_class_name("JumpPage")
-            link['href'] = "/jump/#{pack_and_escape(link.inner_html)}/#{url}"
+            link['href'] = "/jump/#{CGI.escape(link.inner_html)}/#{url}"
           end
         }
         
@@ -31,9 +31,6 @@ class JumpPageExtension < Radiant::Extension
       end
       alias_method_chain :parse_object, :rewrite_links
       
-      def pack_and_escape(string)
-        string.to_a.pack('m')
-      end
     end
   end
   

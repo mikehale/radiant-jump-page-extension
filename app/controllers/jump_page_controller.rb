@@ -5,7 +5,7 @@ class JumpPageController < ApplicationController
   
   def index
     jump_page.request, jump_page.response = request, response
-    jump_page.last_url = params[:url]
+    jump_page.last_url = params[:url].join('/') if params[:url]
     jump_page.last_title = params[:title]
     render :text => jump_page.render
   end
