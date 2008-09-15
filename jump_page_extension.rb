@@ -6,7 +6,7 @@ class JumpPageExtension < Radiant::Extension
   url "http://github.com/mikehale/radiant-jump_page-extension"
   
   define_routes do |map|
-    map.connect 'jump/:title/:url', :controller => '/jump_page'
+    map.connect 'jump/:title/*url', :controller => '/jump_page'
   end
   
   def activate
@@ -23,7 +23,7 @@ class JumpPageExtension < Radiant::Extension
           next if url =~ /^\/.*/
 
           if jumppage = Page.find_by_class_name("JumpPage")
-            link['href'] = "/jump/#{pack_and_escape(link.inner_html)}/#{pack_and_escape(url)}"
+            link['href'] = "/jump/#{pack_and_escape(link.inner_html)}/#{url}"
           end
         }
         
@@ -32,7 +32,7 @@ class JumpPageExtension < Radiant::Extension
       alias_method_chain :parse_object, :rewrite_links
       
       def pack_and_escape(string)
-        CGI::escape(string.to_a.pack('m')).gsub('%0A', '')
+        string.to_a.pack('m')
       end
     end
   end

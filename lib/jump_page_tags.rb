@@ -22,11 +22,11 @@ module JumpPageTags
   end
   
   def find_url(tag)
-    unpack(tag.locals.page.last_url)
+    tag.locals.page.last_url
   end
   
   def unpack(string)
-    CGI::unescape(string).unpack('m').to_s
+    string.unpack('m').first
   end
   
 end
