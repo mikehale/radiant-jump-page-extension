@@ -23,11 +23,15 @@ module JumpPageTags
   private
   
   def find_title(tag)
-    CGI.unescape(tag.locals.page.last_title)
+    unencode(tag.locals.page.last_title)
   end
   
   def find_url(tag)
     tag.locals.page.last_url
+  end
+    
+  def unencode(string)
+    string.unpack('m').first
   end
     
 end

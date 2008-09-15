@@ -23,13 +23,17 @@ class JumpPageExtension < Radiant::Extension
           next if url =~ /^\/.*/ # starts with /
 
           if jumppage = Page.find_by_class_name("JumpPage")
-            link['href'] = "/jump/#{CGI.escape(link.inner_html)}/#{url}"
+            link['href'] = "/jump/#{encode(link.inner_html)}/#{url}"
           end
         }
         
         doc.to_html
       end
       alias_method_chain :parse_object, :rewrite_links
+      
+      def encode(string)
+        string.to_a.pack('m').chomp
+      end      
       
     end
   end

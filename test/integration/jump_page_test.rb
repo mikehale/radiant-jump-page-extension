@@ -5,8 +5,8 @@ class JumpPageTest < ActionController::IntegrationTest
   def setup
     @title = "Google!"
     @url = "http://google.com"
-    @escaped_title = CGI.escape(@title)
-    @jumppage_url = "/jump/#{@escaped_title}/#{@url}"
+    @encoded_title = @title.to_a.pack('m').chomp
+    @jumppage_url = "/jump/#{@encoded_title}/#{@url}"
 
     @home = Page.create!(:title => 'Home', 
                          :slug => '/', 
