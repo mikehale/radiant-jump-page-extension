@@ -5,8 +5,8 @@ class JumpPageTest < ActionController::IntegrationTest
   def setup
     @title = "Google!"
     @url = "http://google.com"
-    @encoded_title = pack_and_escape(@title)
-    @encoded_url = pack_and_escape(@url)
+    @encoded_title = "R29vZ2xlIQ%3D%3D"
+    @encoded_url = "aHR0cDovL2dvb2dsZS5jb20%3D"
     @jumppage_url = "/jump/#{@encoded_title}/#{@encoded_url}"
 
     @home = Page.create!(:title => 'Home', 
@@ -22,7 +22,11 @@ class JumpPageTest < ActionController::IntegrationTest
                              :parent => @home, 
                              :class_name => "JumpPage")
     PagePart.create!(:name => 'body', :page => @jumppage, :content => jump_page)
-  end  
+  end
+  
+  # /jump/TmF0dXJlIE1hZGU%3D/aHR0cDovL3d3dy5uYXR1cmVtYWRlLmNvbQ%3D%3D
+  # /jump/TmF0dXJlIE1hZGU%3D%0A/aHR0cDovL3d3dy5uYXR1cmVtYWRlLmNvbQ%3D%3D%0A
+  # /jump/TmF0dXJlIE1hZGU%3D%0A/aHR0cDovL3d3dy5uYXR1cmVtYWRlLmNvbS8%3D%0A
     
   def test_rewrites_external_links    
     get '/'
@@ -33,10 +37,6 @@ class JumpPageTest < ActionController::IntegrationTest
   def test_tags
     get @jumppage_url
     assert_select "div a[href=#{@url}]", @title
-  end
-  
-  def pack_and_escape(string)
-    CGI::escape(string.to_a.pack('m'))
   end
   
   def jump_page

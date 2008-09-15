@@ -32,7 +32,7 @@ class JumpPageExtension < Radiant::Extension
       alias_method_chain :parse_object, :rewrite_links
       
       def pack_and_escape(string)
-        CGI::escape(string.to_a.pack('m'))
+        CGI::escape(string.to_a.pack('m')).gsub('%0A', '')
       end
     end
   end
