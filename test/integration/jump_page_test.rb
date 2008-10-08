@@ -21,6 +21,7 @@ class JumpPageTest < ActionController::IntegrationTest
                              :parent => @home, 
                              :class_name => "JumpPage")
     PagePart.create!(:name => 'body', :page => @jumppage, :content => jump_page)
+    PagePart.create!(:name => 'config', :page => @jumppage, :content => jump_page_config)
   end
       
   def test_rewrites_external_links    
@@ -31,6 +32,7 @@ class JumpPageTest < ActionController::IntegrationTest
     assert_select "a[href=no_name]"
     assert_select "a[name=no_href]"
     assert_select "a[href=#]"
+    assert_select "a[href=http://news.google.com]"
   end
   
   def test_tags
@@ -44,6 +46,13 @@ class JumpPageTest < ActionController::IntegrationTest
     )
   end
   
+  def jump_page_config
+    %(
+    exclude:
+      - http://news.google.com
+    )
+  end
+  
   def home_page
     %(<html><body>    
       <a href="/somepage">Local Link</a>
@@ -53,6 +62,7 @@ class JumpPageTest < ActionController::IntegrationTest
       <a name="no_href"></a>
       <a href="#">Local Link</a>
       <a name="remote_link" href="http://google.com#">Remote Link</a>
+      <a href="http://news.google.com">Google News</a>
     </body></html>)
   end
     

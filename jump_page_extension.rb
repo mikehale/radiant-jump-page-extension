@@ -25,6 +25,9 @@ class JumpPageExtension < Radiant::Extension
           next if url =~ /^#/
 
           if jumppage = Page.find_by_class_name("JumpPage")
+            should_exclude = jumppage.config[:exclude].detect{|e| url =~ /#{Regexp.escape(e)}/ }
+            next if should_exclude
+            
             unless link.inner_html.blank? || url.blank?
               link['href'] = "/jump/#{encode(link.inner_html)}/#{url}"
             end
@@ -33,6 +36,7 @@ class JumpPageExtension < Radiant::Extension
         
         doc.to_html
       end
+            
       alias_method_chain :parse_object, :rewrite_links
       
       def encode(string)
