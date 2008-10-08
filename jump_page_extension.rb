@@ -24,7 +24,9 @@ class JumpPageExtension < Radiant::Extension
           next if url =~ /javascript/
 
           if jumppage = Page.find_by_class_name("JumpPage")
-            link['href'] = "/jump/#{encode(link.inner_html)}/#{url}"
+            unless link.inner_html.blank? || url.blank?
+              link['href'] = "/jump/#{encode(link.inner_html)}/#{url}"
+            end
           end
         }
         
