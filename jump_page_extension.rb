@@ -22,6 +22,7 @@ class JumpPageExtension < Radiant::Extension
           next if self.is_a? JumpPage 
           next if url =~ /^\/.*/ # starts with /
           next if url =~ /javascript/
+          next if url =~ /^#/
 
           if jumppage = Page.find_by_class_name("JumpPage")
             unless link.inner_html.blank? || url.blank?

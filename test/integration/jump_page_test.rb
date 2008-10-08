@@ -25,10 +25,12 @@ class JumpPageTest < ActionController::IntegrationTest
       
   def test_rewrites_external_links    
     get '/'
-    vr
     assert_select "a[href=/somepage]"
     assert_select "a[href=javascript:void(0);]"
     assert_select "a[href=#{@jumppage_url}]"
+    assert_select "a[href=no_name]"
+    assert_select "a[name=no_href]"
+    assert_select "a[href=#]"
   end
   
   def test_tags
@@ -47,8 +49,10 @@ class JumpPageTest < ActionController::IntegrationTest
       <a href="/somepage">Local Link</a>
       <a href="javascript:void(0);">Javascript Action</a>
       <a href="#{@url}">#{@title}</a>
-      <a href="no name"></a>
-      <a></a>
+      <a href="no_name"></a>
+      <a name="no_href"></a>
+      <a href="#">Local Link</a>
+      <a name="remote_link" href="http://google.com#">Remote Link</a>
     </body></html>)
   end
     
