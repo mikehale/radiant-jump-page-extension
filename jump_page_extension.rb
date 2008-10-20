@@ -41,13 +41,8 @@ class JumpPageExtension < Radiant::Extension
         }
         
         doc.to_html
-      end
-            
+      end            
       alias_method_chain :parse_object, :rewrite_links
-      
-      def encode(string)
-        string.to_a.pack('m').chomp
-      end      
       
     end
   end
