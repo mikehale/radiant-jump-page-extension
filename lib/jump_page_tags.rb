@@ -27,7 +27,7 @@ module JumpPageTags
   end
   
   def find_url(tag)
-    tag.locals.page.last_url
+    unencode(tag.locals.page.last_url)
   end
     
   def unencode(string)

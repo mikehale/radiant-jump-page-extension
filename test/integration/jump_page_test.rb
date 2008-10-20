@@ -3,11 +3,6 @@ require File.dirname(__FILE__) + '/../test_helper'
 class JumpPageTest < ActionController::IntegrationTest
   
   def setup
-    @title = "Google!"
-    @url = "http://google.com"
-    @encoded_title = @title.to_a.pack('m').chomp
-    @jumppage_url = "/jump/#{@encoded_title}/#{@url}"
-
     @home = Page.create!(:title => 'Home', 
                          :slug => '/', 
                          :breadcrumb => 'home', 
@@ -23,21 +18,28 @@ class JumpPageTest < ActionController::IntegrationTest
     PagePart.create!(:name => 'body', :page => @jumppage, :content => jump_page)
     PagePart.create!(:name => 'config', :page => @jumppage, :content => jump_page_config)
   end
-      
+        
   def test_rewrites_external_links    
     get '/'
     assert_select "a[href=/somepage]"
     assert_select "a[href=javascript:void(0);]"
-    assert_select "a[href=#{@jumppage_url}]"
     assert_select "a[href=no_name]"
     assert_select "a[name=no_href]"
     assert_select "a[href=#]"
     assert_select "a[href=http://news.google.com]"
+    assert_select "a[href=/jump/#{"Google!".encode}/#{"http://google.com".encode}]"
   end
   
   def test_tags
-    get @jumppage_url
-    assert_select "div a[href=#{@url}]", @title
+    title = "Google!"
+    url = "http://google.com"
+    get "/jump/#{title.encode}/#{url.encode}"
+    assert_select "div a[href=#{url}]", title
+
+    title = "Link with params"
+    url = "http://www.google.com/search?q=test"
+    get "/jump/#{title.encode}/#{url.encode}"
+    assert_select "div a[href=#{url}]", title
   end
   
   def jump_page
@@ -57,12 +59,13 @@ class JumpPageTest < ActionController::IntegrationTest
     %(<html><body>    
       <a href="/somepage">Local Link</a>
       <a href="javascript:void(0);">Javascript Action</a>
-      <a href="#{@url}">#{@title}</a>
       <a href="no_name"></a>
       <a name="no_href"></a>
       <a href="#">Local Link</a>
       <a name="remote_link" href="http://google.com#">Remote Link</a>
       <a href="http://news.google.com">Google News</a>
+      <a href="http://google.com">Google!</a>
+      <a href="http://www.google.com/search?q=test">Link with query param</a>
     </body></html>)
   end
     

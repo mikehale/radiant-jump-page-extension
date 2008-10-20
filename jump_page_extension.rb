@@ -10,6 +10,12 @@ class JumpPageExtension < Radiant::Extension
   end
   
   def activate
+    String.class_eval do
+      def encode
+        self.to_a.pack('m').chomp
+      end      
+    end
+    
     Page.send :include, JumpPageTags    
     Page.class_eval do
       
@@ -29,7 +35,7 @@ class JumpPageExtension < Radiant::Extension
             next if should_exclude
             
             unless link.inner_html.blank? || url.blank?
-              link['href'] = "/jump/#{encode(link.inner_html)}/#{url}"
+              link['href'] = "/jump/#{link.inner_html.encode}/#{url.encode}"
             end
           end
         }
