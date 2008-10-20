@@ -1,13 +1,14 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
+String.class_eval do
+  def encode
+    self.to_a.pack('m').chomp
+  end
+end
+
 class JumpPageTest < ActionController::IntegrationTest
   
   def setup
-    @title = "Google!"
-    @url = "http://google.com"
-    @encoded_title = @title.to_a.pack('m').chomp
-    @jumppage_url = "/jump/#{@encoded_title}/#{@url}"
-
     @home = Page.create!(:title => 'Home', 
                          :slug => '/', 
                          :breadcrumb => 'home', 
@@ -22,17 +23,24 @@ class JumpPageTest < ActionController::IntegrationTest
                              :class_name => "JumpPage")
     PagePart.create!(:name => 'body', :page => @jumppage, :content => jump_page)
   end
-      
+        
   def test_rewrites_external_links    
     get '/'
     assert_select "a[href=/somepage]"
     assert_select "a[href=javascript:void(0);]"
-    assert_select "a[href=#{@jumppage_url}]"
+    assert_select "a[href=/jump/#{"Google!".encode}/#{"http://google.com".encode}]"
   end
   
   def test_tags
-    get @jumppage_url
-    assert_select "div a[href=#{@url}]", @title
+    title = "Google!"
+    url = "http://google.com"
+    get "/jump/#{title.encode}/#{url.encode}"
+    assert_select "div a[href=#{url}]", title
+
+    title = "Link with params"
+    url = "http://www.google.com/search?q=test"
+    get "/jump/#{title.encode}/#{url.encode}"
+    assert_select "div a[href=#{url}]", title
   end
   
   def jump_page
@@ -45,7 +53,8 @@ class JumpPageTest < ActionController::IntegrationTest
     %(<html><body>    
       <a href="/somepage">Local Link</a>
       <a href="javascript:void(0);">Javascript Action</a>
-      <a href="#{@url}">#{@title}</a>
+      <a href="http://google.com">Google!</a>
+      <a href="http://www.google.com/search?q=test">Link with query param</a>
     </body></html>)
   end
     
