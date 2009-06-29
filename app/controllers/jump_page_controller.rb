@@ -1,4 +1,4 @@
-class JumpPageController < ApplicationController
+class JumpPagesController < ApplicationController
   session :off
   no_login_required
   skip_before_filter :verify_authenticity_token
