@@ -21,6 +21,8 @@ class JumpPageExtension < Radiant::Extension
 
       def parse_object_with_rewrite_links(object)
         text = parse_object_without_rewrite_links(object)
+        return text if (text =~ /<\?xml.*\?>/) # don't do anything if this is an XML document
+
         doc = Hpricot(text)
 
         (doc/"a").each {|link|
